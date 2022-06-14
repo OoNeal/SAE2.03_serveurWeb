@@ -1,11 +1,51 @@
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class HttpServer {
-
     public static void main(String[] args) throws IOException {
+        int port;
+        String root;
+        boolean index;
+        String[] acceptedIP;
+        String[] rejectedIP;
+        try{
+            File file = new File("Configuration.tld");
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = null;
+            db = dbf.newDocumentBuilder();
+            Document doc = doc = db.parse(file);
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("port");
+            port = Integer.parseInt(nodeList.item(0).getTextContent());
+            nodeList = doc.getElementsByTagName("root");
+            root = nodeList.item(0).getTextContent();
+            nodeList = doc.getElementsByTagName("index");
+            index = Boolean.parseBoolean(nodeList.item(0).getTextContent());
+            nodeList = doc.getElementsByTagName("acceptedIP");
+            acceptedIP = nodeList.item(0).getTextContent().split(",");
+            nodeList = doc.getElementsByTagName("rejectedIP");
+            rejectedIP = nodeList.item(0).getTextContent().split(",");
+        } catch(SAXException | IOException | ParserConfigurationException e){
+            throw new RuntimeException(e);
+        }
+
+        System.out.println("Server started on port " + port);
+        System.out.println("Root directory: " + root);
+        System.out.println("Index file: " + index);
+        System.out.println("Accepted IP: " + Arrays.toString(acceptedIP));
+        System.out.println("Rejected IP: " + Arrays.toString(rejectedIP));
+
+
         ServerSocket serveur = new ServerSocket();
 
         if (args.length == 1) {
