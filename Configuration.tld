@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<webconf>
+    <port></port>
+    <root></root>
+    <index></index>
+    <accept></accept>
+    <reject></reject>
+</webconf>
