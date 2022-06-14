@@ -1,5 +1,3 @@
-package SiteWeb;
-
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -35,59 +33,60 @@ public class HttpServer {
         ps.print("\r\n");
         ps.print(sb_client);
 
-            while (client.isConnected()) {
-                //Ecoute de la reponse du client
-                boolean trouve = false;
-                String file = "";
-                try {
-                    line = client_in.readLine();
-                } catch (IOException e) {
-                    System.out.println("Buffered vide");
-                    line = "";
-                    file = "";
-                }
-                System.out.println("Avant while");
-                while (!line.isEmpty()) {
-                    //si la requete contient un lien vers un fichier
-                    if (line.contains("GET")) {
-                        String[] split = line.split(" ");
-                        file = split[1];
-                        trouve = true;
-                    }
-                    line = client_in.readLine();
-                }
-                System.out.println("Apres while");
-                if (file.equals("/")) {
-                    file = "/index.html";
-                }
-                //Affichage de la page demandée
-                try {
-                    //si le fichier existe
-                    if (new File("htdocs" + file).exists()) {
-                        //Affichage de la page
-                        sb_client = new StringBuilder();
-                        file_in = new BufferedReader(new FileReader("htdocs" + file));
-                        line = file_in.readLine();
-                        while (line != null) {
-                            System.out.println(line);
-                            sb_client.append(line).append(" ");
-                            line = file_in.readLine();
-                        }
-                    }
-                } catch (FileNotFoundException e) {
-                    trouve = false;
-                }
-                if (trouve && !file.isEmpty()) {
-                    ps = new PrintStream(client.getOutputStream());
-                    ps.print("HTTP/1.1 200 OK\r\n");
-                } else if (!trouve && !file.isEmpty()) {
-                    ps = new PrintStream(client.getOutputStream());
-                    ps.print("HTTP/1.1 404 Not Found\r\n");
-                }
-                ps.print("Content-Type: text/html\r\n");
-                ps.print("Content-Length: " + sb_client.length() + "\r\n");
-                ps.print("\r\n");
-                ps.print(sb_client);
+        while (client.isConnected()) {
+            //Ecoute de la reponse du client
+            boolean trouve = false;
+            String file = "";
+            try {
+                line = client_in.readLine();
+            } catch (IOException e) {
+                System.out.println("Buffered vide");
+                line = "";
+                file = "";
             }
+            System.out.println("Avant while");
+            while (!line.isEmpty()) {
+                //si la requete contient un lien vers un fichier
+                if (line.contains("GET")) {
+                    String[] split = line.split(" ");
+                    file = split[1];
+                    trouve = true;
+                }
+                line = client_in.readLine();
+            }
+            System.out.println("Apres while");
+            if (file.equals("/")) {
+                file = "/index.html";
+            }
+            //Affichage de la page demandée
+            try {
+                //si le fichier existe
+                if (new File("htdocs" + file).exists()) {
+                    //Affichage de la page
+                    sb_client = new StringBuilder();
+                    file_in = new BufferedReader(new FileReader("htdocs" + file));
+                    line = file_in.readLine();
+                    while (line != null) {
+                        System.out.println(line);
+                        sb_client.append(line).append(" ");
+                        line = file_in.readLine();
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                trouve = false;
+            }
+            if (trouve && !file.isEmpty()) {
+                ps = new PrintStream(client.getOutputStream());
+                ps.print("HTTP/1.1 200 OK\r\n");
+            } else if (!trouve && !file.isEmpty()) {
+                ps = new PrintStream(client.getOutputStream());
+                ps.print("HTTP/1.1 404 Not Found\r\n");
+            }
+            ps.print("Content-Type: text/html\r\n");
+            ps.print("Content-Length: " + sb_client.length() + "\r\n");
+            ps.print("\r\n");
+            ps.print(sb_client);
         }
+        client.close();
+    }
 }
