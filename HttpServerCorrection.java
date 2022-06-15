@@ -1,3 +1,5 @@
+package SiteWeb;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
@@ -53,16 +55,16 @@ public class HttpServerCorrection {
 			DataOutputStream data = new DataOutputStream(output);
 			if (requete[0].equals("GET")) {
 				/* Override manuel: / -> /index.html */
-				if (requete[1].equals("/"))
+				if (requete[1].equals("/")) {
 					requete[1] = "/index.html";
-
-				if (new File(docroot + requete[1]).isFile()) {
+				}
+				if (new File("htdocs" + requete[1]).isFile()) {
 					/* le fichier existe, on l'envoie */
-					FileInputStream fis = new FileInputStream(docroot + requete[1]);
+					FileInputStream fis = new FileInputStream("htdocs" + requete[1]);
 					int size = fis.available();
 					byte[] fichier = new byte[size];
 					fis.read(fichier);
-					System.out.println("> [fichier] " + docroot + requete[1]);
+					System.out.println("> [fichier] " + "htdocs" + requete[1]);
 					/* première solution: on utilise writeBytes().
 					 * attention, writeChars() ne marche pas, car les caractères
 					 * sont stockés sur 2 octets en Java. */
@@ -71,6 +73,7 @@ public class HttpServerCorrection {
 				} else {
 					/* le fichier n'existe pas => erreur 404 */
 					/* autre solution: on écrit avec write(String.getbyte()) */
+					System.out.println("> [erreur] " + "htdocs" + requete[1]);
 					data.write(status404.getBytes());
 					data.write(crlf);
 					data.write(crlf);
@@ -91,3 +94,4 @@ public class HttpServerCorrection {
 		ss.close();
 	}
 }
+

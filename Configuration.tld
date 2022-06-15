@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <webconf>
-    <port></port>
-    <root></root>
-    <index></index>
-    <accept></accept>
-    <reject></reject>
+    <port>80</port>
+    <root>htdocs/</root>
+    <index>false</index>
+    <accept>100.25.2.0</accept>
+    <reject>100.64.80.221,127.0.0.1</reject>
 </webconf>
